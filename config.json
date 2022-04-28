@@ -1,0 +1,6 @@
+{
+  "numberOfCameras": 3,
+  "sendingFrequency":[ 3, 5, 7 ],
+  "ip": "http://localhost/",
+  "port":"3030"
+}
