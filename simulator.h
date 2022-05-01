@@ -8,5 +8,6 @@ public:
 	simulator();
 	~simulator();
 	void run();
+	int sendToServer();
 	
 };

@@ -20,6 +20,6 @@ public:
 	void run();
 	void stop();
 	void printInfo();
-
+	int sendToServer();
 };
 

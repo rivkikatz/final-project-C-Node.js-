@@ -6,6 +6,9 @@
 #include <Windows.h>
 #include <iostream>
 
+using namespace std;
+
+
 
 camera::camera() {
 	std::cout << "empty constructor\n";
@@ -74,11 +77,12 @@ void camera::run()
 		/*std::cout << "camera no "<<id<<std::endl;*/
 		generate();
 		std::cout<<"camera id= "<<this->id << ", num of messages  " << messageIndex << "---------------\n";
-		//messages[messageIndex-1]->print();
+		messages[messageIndex-1]->print();
 
 		sendToBuffer();
+		//sendToServer();
+		Sleep(30000);
 
-		Sleep(1000);
 	}	
 }
 
@@ -91,3 +95,66 @@ void camera::printInfo()
 {
 	std::cout << "id= " << this->id << ", isActive= " << isActive << ", messagesPerSecond= " << messagesPerSecond <<", messageIndex= " << messageIndex<<"\n";
 }
+
+int camera::sendToServer()
+{
+	WSAData wsaData;
+	WORD DllVersion = MAKEWORD(2, 1);
+	if (WSAStartup(DllVersion, &wsaData) != 0) {
+		cout << "Winsock Connection Failed!" << endl;
+		/*exit(1);*/
+		return(1);
+	}
+
+	SOCKADDR_IN addr;
+	int addrLen = sizeof(addr);
+	IN_ADDR ipvalue;
+	addr.sin_addr.s_addr = inet_addr("127.0.0.1");//loclahost
+	addr.sin_port = htons(3030);
+	addr.sin_family = AF_INET;
+
+	SOCKET connection = socket(AF_INET, SOCK_STREAM, NULL);
+	if (connect(connection, (SOCKADDR*)&addr, addrLen) == 0) {
+
+		//string m = "you";
+		string m;
+
+		for (int i = 0; i < buffer.getIndex(); i++)
+		{
+			cout << buffer.getBuffer()[i];
+			m =(char*) buffer.getBuffer()[i];
+			send(connection, m.c_str(), m.length(), 0);
+			Sleep(3000);
+		}
+		//m = (char*)buffer.getBuffer();
+
+
+		cout <<" Connected!" << endl;
+
+		//send(connection, b.c_str(), b.length(), 0);
+		
+		//char buf[] = { (char)buffer.getBuffer()[0] };
+	
+		/*if (!m.empty()) {
+			cout << m;
+			send(connection, m.c_str(), m.length(), 0);
+			buffer.cleanBuffer();
+		}*/
+
+		//send(connection,arr, sizeof(arr), 0);
+		/*if (send(connection, b.c_str(), b.length(), 0)==0) {
+			closesocket(connection);
+			WSACleanup();
+		}*/
+		//exit(0);
+		return(1);
+
+	}
+	else {
+		cout << "Error Connecting to Host" << endl;
+		//exit(1);
+		return(1);
+	}
+	return 0;
+}
+
