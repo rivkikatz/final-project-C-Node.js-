@@ -1,8 +1,5 @@
-﻿
-
-#include <iostream>
+﻿#include <iostream>
 #include "simulator.h"
-
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #pragma comment (lib, "Ws2_32.lib")
 #include <string.h>
@@ -12,9 +9,7 @@
 
 using namespace std;
 int main()
-{  
-    simulator s=simulator();
+{
+    simulator s = simulator();
     s.run();
 }
-
-

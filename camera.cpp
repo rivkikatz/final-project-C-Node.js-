@@ -5,7 +5,7 @@
 #include <random>
 #include <Windows.h>
 #include <iostream>
-
+#include <thread>
 using namespace std;
 
 
@@ -96,13 +96,20 @@ void camera::printInfo()
 	std::cout << "id= " << this->id << ", isActive= " << isActive << ", messagesPerSecond= " << messagesPerSecond <<", messageIndex= " << messageIndex<<"\n";
 }
 
+void camera::sendDataToServer()
+{
+	while (this->isActive) {
+		std::this_thread::sleep_for(3s);
+		this->sendToServer();
+	}
+}
+
 int camera::sendToServer()
 {
 	WSAData wsaData;
 	WORD DllVersion = MAKEWORD(2, 1);
 	if (WSAStartup(DllVersion, &wsaData) != 0) {
 		cout << "Winsock Connection Failed!" << endl;
-		/*exit(1);*/
 		return(1);
 	}
 
@@ -115,44 +122,25 @@ int camera::sendToServer()
 
 	SOCKET connection = socket(AF_INET, SOCK_STREAM, NULL);
 	if (connect(connection, (SOCKADDR*)&addr, addrLen) == 0) {
-
-		//string m = "you";
 		string m;
-
 		for (int i = 0; i < buffer.getIndex(); i++)
 		{
 			cout << buffer.getBuffer()[i];
 			m =(char*) buffer.getBuffer()[i];
-			send(connection, m.c_str(), m.length(), 0);
-			Sleep(3000);
+			if (!m.empty()) {
+				send(connection, m.c_str(), m.length(), 0);
+				cout << " send it!" << endl;
+				Sleep(3000);
+			}
+			else {
+				cout << "missing data!!!!!!!1\n";
+			}
 		}
-		//m = (char*)buffer.getBuffer();
-
-
-		cout <<" Connected!" << endl;
-
-		//send(connection, b.c_str(), b.length(), 0);
-		
 		//char buf[] = { (char)buffer.getBuffer()[0] };
-	
-		/*if (!m.empty()) {
-			cout << m;
-			send(connection, m.c_str(), m.length(), 0);
-			buffer.cleanBuffer();
-		}*/
-
-		//send(connection,arr, sizeof(arr), 0);
-		/*if (send(connection, b.c_str(), b.length(), 0)==0) {
-			closesocket(connection);
-			WSACleanup();
-		}*/
-		//exit(0);
 		return(1);
-
 	}
 	else {
 		cout << "Error Connecting to Host" << endl;
-		//exit(1);
 		return(1);
 	}
 	return 0;

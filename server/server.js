@@ -38,7 +38,9 @@ server.on('connection', function (socket) {
     socket.write('Hello, client.');
     socket.on('data', function (chunk) {
         console.log(`Data received from client: ${chunk.toString()}.`);
-        console.log(chunk.toJSON());
+        // parseBuffer(chunk)
+      
+        // console.log(chunk.toJSON());
         // chunk.toJSON().data.forEach(e => {
         //     console.log(e);
         // });
@@ -50,5 +52,22 @@ server.on('connection', function (socket) {
         console.log(`Error: ${err}`);
     });
 });
+
+
+function parseBuffer(buffer) {
+    let message =new {}
+    console.log(message);
+    message.type = Buffer.from(buffer).readInt8(0)
+    message.id = Buffer.from(buffer).readInt8(2)
+    if (message.type == 1) {
+        message.status = Buffer.from(buffer).readInt8(4)
+        message.status = Buffer.from(buffer).readIntBE(4,1)
+    } else {
+        message.distance = Buffer.from(buffer).readFloatLE(4);
+        message.angle = Buffer.from(buffer).readFloatLE(6);
+        message.speed = Buffer.from(buffer).readFloatLE(10);
+    }
+    console.log(message);
+}
 
 

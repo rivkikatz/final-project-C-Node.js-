@@ -6,8 +6,8 @@
 void statusMessage::parseMessage()//from buffer to variables
 {
 	if (!this->messageBuffer)
-		return ;
-	
+		return;
+
 	std::memcpy(&(this->messageType), this->messageBuffer, sizeof(int));
 	std::memcpy(&(this->status), this->messageBuffer + sizeof(int), sizeof(short));
 
@@ -23,18 +23,19 @@ void statusMessage::parseMessage()//from buffer to variables
 	}
 	std::cout << "\n";*/
 
-	
+
 }
 
 void statusMessage::parseBack()//from variables to buffer
 {
-	this->messageBuffer = (unsigned char*)malloc(3);
-	std::memcpy(this->messageBuffer, &(this->messageId), 2);
+	this->messageBuffer = (unsigned char*)malloc(5);
 	std::memcpy(this->messageBuffer, &(this->messageType), 2);
-	std::memcpy(this->messageBuffer + 2, &(this->status), 1);
-	/*for (int i = 0; i < 3; i++)
+	std::memcpy(this->messageBuffer + 2, &(this->messageId), 2);
+	std::memcpy(this->messageBuffer + 4, &(this->status), 1);
+	/*std::cout << "im status parse back " << this->messageBuffer << "\n";
+	for (int i = 0; i < 5; i++)
 	{
-		std::cout << (int)messageBuffer[i];
+		std::cout << messageBuffer[i];
 	}
 	std::cout << "\n";*/
 }
@@ -42,7 +43,7 @@ void statusMessage::parseBack()//from variables to buffer
 void statusMessage::print()
 {
 	std::cout << "inform about your messege:" << "\n";
-	std::cout << "Type:	" << this->messageType << "\t" << "Status:	" << this->status << "\n";
+	std::cout << "Id: " << this->messageId << " Type:	" << this->messageType << "\t" << "Status:	" << this->status << "\n";
 }
 
 statusMessage::statusMessage(int messageId, int messageType, short status) :baseMessage(messageId, messageType)
